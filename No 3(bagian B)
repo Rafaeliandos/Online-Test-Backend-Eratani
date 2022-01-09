@@ -1,0 +1,7 @@
+let
+    Source = Excel.CurrentWorkbook(){[Name="Table1"]}[Content],
+    #"Changed Type" = Table.TransformColumnTypes(Source,{{"id", Int64.Type}, {"country", type text}, {"credit_card_type", type text}, {"credit_card", Int64.Type}}),
+    #"Grouped Rows" = Table.Group(#"Changed Type", {"credit_card_type"}, {{"creditcard", each Table.RowCount(_), Int64.Type}, {"jumlah", each _, type table [id=nullable number, country=nullable text, credit_card_type=nullable text, credit_card=nullable number]}}),
+    #"Sorted Rows" = Table.Sort(#"Grouped Rows",{{"creditcard", Order.Descending}})
+in
+    #"Sorted Rows"
